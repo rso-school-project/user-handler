@@ -1,0 +1,40 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  # link group variables
+  - group: docker-hub-credentials
+
+  # script variable
+  - name: DOCKER_IMAGE
+    value: 'jakakokosar/user-handler:0.0.1'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.7'
+
+- bash: echo $(DOCKER_PASSWORD) | docker login -u $(DOCKER_USERNAME) --password-stdin
+  displayName: 'Login to docker hub'
+
+- bash: docker build -t $(DOCKER_IMAGE) .
+  displayName: 'Build docker image'
+
+- bash: |
+    sudo docker push $(DOCKER_IMAGE)
+    # docker logout to remove the credentials from the file (WARNING! Your password will be stored unencrypted in /home/vsts/.docker/config.json.)
+    docker logout
+  displayName: 'Push image to docker hub'
+
+
+#- script: |
+#    pip install -r requirements-core.txt
+#    pip install -r requirements-test.txt
+#  displayName: 'Install requirements'
+#
+#- script: |
+#    pytest -vv project_name/tests/
+#  displayName: 'Run Pytest'
