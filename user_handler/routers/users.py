@@ -33,3 +33,12 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     if db_user is None:
         raise HTTPException(status_code=404, detail='User not found')
     return db_user
+
+
+@router.post('/login/')
+def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_username_password(db, user=user)
+    if db_user:
+        return { "ok": True }
+    else:
+        raise HTTPException(status_code=404, detail='The username or password is not correct.')

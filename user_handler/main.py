@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.openapi.docs import get_swagger_ui_html
 from starlette_prometheus import metrics, PrometheusMiddleware
 from starlette.requests import Request
+#from starlette.middleware.cors import CORSMiddleware
 
 
 from . import VERSION, PREFIX
@@ -19,6 +20,18 @@ app = FastAPI(
     redoc_url=None,
 )
 
+# origins = [
+#     "http://localhost",
+#     "http://localhost:3000",
+# ]
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 @app.get('/docs', include_in_schema=False)
 async def custom_swagger_ui_html():
