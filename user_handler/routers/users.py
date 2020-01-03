@@ -35,10 +35,10 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     return db_user
 
 
-@router.post('/login/')
+@router.post('/login/', response_model=schemas.User)
 def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_username_password(db, user=user)
     if db_user:
-        return { "ok": True }
+        return db_user
     else:
         raise HTTPException(status_code=404, detail='The username or password is not correct.')
